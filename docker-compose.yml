@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=telegraf
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=admin123
+      - INFLUXDB_USER=telegraf
+      - INFLUXDB_USER_PASSWORD=telegraf123
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+    networks:
+      - tick-network
+
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    depends_on:
+      - influxdb
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/rootfs/sys:ro
+      - /proc:/rootfs/proc:ro
+      - /etc:/rootfs/etc:ro
+    environment:
+      - HOST_PROC=/rootfs/proc
+      - HOST_SYS=/rootfs/sys
+      - HOST_ETC=/rootfs/etc
+    networks:
+      - tick-network
+
+  chronograf:
+    image: chronograf:latest
+    container_name: chronograf
+    depends_on:
+      - influxdb
+    ports:
+      - "8888:8888"
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_USERNAME=admin
+      - INFLUXDB_PASSWORD=admin123
+    volumes:
+      - chronograf-data:/var/lib/chronograf
+    networks:
+      - tick-network
+
+  kapacitor:
+    image: kapacitor:latest
+    container_name: kapacitor
+    depends_on:
+      - influxdb
+    ports:
+      - "9092:9092"
+    environment:
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+    volumes:
+      - kapacitor-data:/var/lib/kapacitor
+      - ./kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro
+    networks:
+      - tick-network
+
+networks:
+  tick-network:
+    driver: bridge
+
+volumes:
+  influxdb-data:
+  chronograf-data:
+  kapacitor-data:
