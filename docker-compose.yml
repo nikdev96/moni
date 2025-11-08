@@ -20,6 +20,8 @@ services:
   telegraf:
     image: telegraf:latest
     container_name: telegraf
+    user: "0:988"
+    privileged: true
     depends_on:
       - influxdb
     volumes:
