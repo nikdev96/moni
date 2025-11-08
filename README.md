@@ -36,9 +36,9 @@
 
 ### Практическая часть (задания 7-9)
 
-⏳ **Задание 7** - Запуск TICK stack, скриншот Chronograf
-⏳ **Задание 8** - Data Explorer: график CPU утилизации
-⏳ **Задание 9** - Проверка Docker метрик в Telegraf
+✅ **Задание 7** - Запуск TICK stack, скриншот Chronograf ([screenshots/1.png](screenshots/1.png))
+✅ **Задание 8** - Data Explorer: график CPU утилизации ([screenshots/2.png](screenshots/2.png))
+✅ **Задание 9** - Проверка Docker метрик в Telegraf ([screenshots/2.png](screenshots/2.png))
 
 ---
 
